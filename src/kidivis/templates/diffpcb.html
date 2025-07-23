@@ -5,6 +5,16 @@
   <title>KiCad PCB Diff</title>
 <style>
 
+.fieldset-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+}
+
+#pcb-image-div {
+  padding-top: 60px;
+}
 .commit {
   border-left: 4px solid #4CAF50;
   background-color: #fff;
@@ -51,62 +61,61 @@ button.show-option {
 </head>
 <body>
 
-<fieldset id="commit-set">
-<legend>Select commit/backup:</legend>
-
-{% set mode_conf = {
-    'base': {
-        'title': 'Base (old commit)',
-        'commit_id': base_commit_id,
-        'show_options_handler': 'showBaseOptions()',
-        'select_option_handler': 'selectBaseOption(this)',
-    },
-    'target': {
-        'title': 'Target (new commit)',
-        'commit_id': target_commit_id,
-        'show_options_handler': 'showTargetOptions()',
-        'select_option_handler': 'selectTargetOption(this)',
-    },
-} %}
-
-{% for mode, conf in mode_conf.items() %}
-  <label for="{{mode}}-commit">{{conf['title']}}:</label>
-  <input type="text" id="{{mode}}-commit" size="7"
-  placeholder="input or choose"
-  value="{{conf['commit_id']}}" />
-
-  <button command="show-modal" commandfor="{{mode}}-options" class="show-option">show list</button>
-  <dialog id="{{mode}}-options" onclick="closeDialog(this)">
-    <article class="commit" onclick="{{conf['select_option_handler']}}" data-commit-id="WORK">
-      <header class="hash">WORK</header>
-      <p class="message">Working tree</header>
-    </article>
-    {% for cl in commit_logs %}
-    <article class="commit" onclick="{{conf['select_option_handler']}}" data-commit-id="{{cl.hash}}">
-      <header>
-        commit
-        <code class="hash">{{cl.hash}}</code>
-        <span class="refs">{% if cl.refs != '' %}({{cl.refs}}){% endif %}</span></header>
-      <p class="message">{{cl.subject}}</p>
-      <p class="message">{{cl.body}}</p>
-      <footer class="meta">Author: {{cl.author_name}} | Date: {{cl.author_date}}</footer>
-    </article>
-    {% endfor %}
-    {% for bv in backup_versions %}
-    <article class="commit" onclick="{{conf['select_option_handler']}}" data-commit-id="{{bv}}">
-      <header>backup {{bv}}</header>
-    </article>
-    {% endfor %}
-    <ul>
-    </ul>
-  </dialog>
-{% endfor %}
-
-<button id="change-commit-button" class="apply">Apply commit setting</button>
-
-</fieldset>
-
 <div class="fieldset-wrapper" style="display: flex;">
+  <fieldset id="commit-set">
+  <legend>Select commit/backup:</legend>
+
+  {% set mode_conf = {
+      'base': {
+          'title': 'Base (old commit)',
+          'commit_id': base_commit_id,
+          'show_options_handler': 'showBaseOptions()',
+          'select_option_handler': 'selectBaseOption(this)',
+      },
+      'target': {
+          'title': 'Target (new commit)',
+          'commit_id': target_commit_id,
+          'show_options_handler': 'showTargetOptions()',
+          'select_option_handler': 'selectTargetOption(this)',
+      },
+  } %}
+
+  {% for mode, conf in mode_conf.items() %}
+    <label for="{{mode}}-commit">{{conf['title']}}:</label>
+    <input type="text" id="{{mode}}-commit" size="7"
+    placeholder="input or choose"
+    value="{{conf['commit_id']}}" />
+
+    <button command="show-modal" commandfor="{{mode}}-options" class="show-option">show list</button>
+    <dialog id="{{mode}}-options" onclick="closeDialog(this)">
+      <article class="commit" onclick="{{conf['select_option_handler']}}" data-commit-id="WORK">
+        <header class="hash">WORK</header>
+        <p class="message">Working tree</header>
+      </article>
+      {% for cl in commit_logs %}
+      <article class="commit" onclick="{{conf['select_option_handler']}}" data-commit-id="{{cl.hash}}">
+        <header>
+          commit
+          <code class="hash">{{cl.hash}}</code>
+          <span class="refs">{% if cl.refs != '' %}({{cl.refs}}){% endif %}</span></header>
+        <p class="message">{{cl.subject}}</p>
+        <p class="message">{{cl.body}}</p>
+        <footer class="meta">Author: {{cl.author_name}} | Date: {{cl.author_date}}</footer>
+      </article>
+      {% endfor %}
+      {% for bv in backup_versions %}
+      <article class="commit" onclick="{{conf['select_option_handler']}}" data-commit-id="{{bv}}">
+        <header>backup {{bv}}</header>
+      </article>
+      {% endfor %}
+      <ul>
+      </ul>
+    </dialog>
+  {% endfor %}
+
+  <button id="change-commit-button" class="apply">Apply commit setting</button>
+
+  </fieldset>
 
   <fieldset id="imagesel-set" disabled>
     <legend>Select image:</legend>

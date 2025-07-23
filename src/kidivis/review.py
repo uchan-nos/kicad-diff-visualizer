@@ -235,7 +235,7 @@ def action_diff(req, diff_base, diff_target, obj):
 
     if req.sch_path:
         sheets = get_sch_subsheets_recursive(req.sch_path)
-        files = [sh.file for sh in sheets] + [req.sch_path]
+        files = [sh.name for sh in sheets] + [req.sch_path]
         names = [Path(f).stem for f in files]
         obj_list = req.layers + names
 
